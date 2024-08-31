@@ -18,12 +18,10 @@ module Request
         nil
       end
 
-      def fetch_historical_data
+      def fetch_historical_weather
         uri = URI("#{HISTORICAL_URL}/#{LOCATION_KEY}/historical/24?apikey=#{API_KEY}")
         response = Net::HTTP.get(uri)
         JSON.parse(response)
-      rescue StandardError => e
-        nil
       end
 
       def render_current_weather(data)
@@ -94,19 +92,26 @@ module Request
 
       desc 'Почасовая температура за последние 24 часа'
       get :historical do
-        response_data = fetch_historical_data
-        if response_data && response_data.any?
-          render_historical_weather(response_data)
-        else
-          error!('Ошибка: Не удалось получить данные о температуре', 400)
+        begin
+          data = fetch_historical_weather
+
+          data.map do |d|
+            {
+              observation_time: d['LocalObservationDateTime'],
+              metric_temp: d.dig('Temperature', 'Metric', 'Value'),
+              metric_unit: d.dig('Temperature', 'Metric', 'Unit'),
+              imperial_temp: d.dig('Temperature', 'Imperial', 'Value'),
+              imperial_unit: d.dig('Temperature', 'Imperial', 'Unit')
+            }
+          end
+        rescue StandardError => e
+          error!({error: "Не удалось получить данные: #{e.message}"}, 500)
         end
-      rescue => e
-        handle_error(e)
       end
 
       desc 'Максимальная температура за 24 часа'
       get 'historical/max' do
-        response_data = fetch_historical_data
+        response_data = fetch_historical_weather
         if response_data && response_data.any?
           render_historical_max_temperature(response_data.last)
         else
@@ -118,7 +123,7 @@ module Request
 
       desc 'Минимальная температура за 24 часа'
       get 'historical/min' do
-        response_data = fetch_historical_data
+        response_data = fetch_historical_weather
         if response_data && response_data.any?
           render_historical_min_temperature(response_data.last)
         else
@@ -130,7 +135,7 @@ module Request
 
       desc 'Средняя температура за 24 часа'
       get 'historical/avg' do
-        response_data = fetch_historical_data
+        response_data = fetch_historical_weather
         if response_data && response_data.any?
           render_historical_avg_temperature(response_data)
         else
@@ -146,7 +151,7 @@ module Request
       end
       get :by_time do
         timestamp = params[:timestamp]
-        response_data = fetch_historical_data
+        response_data = fetch_historical_weather
         if response_data && response_data.any?
           render_weather_by_time(response_data, timestamp)
         else
