@@ -32,16 +32,20 @@ module Request
       end
 
       def render_historical_max_temperature(data)
+        max_temp_data = data.max_by { |d| d.dig('Temperature', 'Metric', 'Value') }
         {
-          max_temp_metric: data.dig('TemperatureSummary', 'Past24HourRange', 'Maximum', 'Metric', 'Value'),
-          max_temp_imperial: data.dig('TemperatureSummary', 'Past24HourRange', 'Maximum', 'Imperial', 'Value')
+          max_temp_metric: max_temp_data.dig('Temperature', 'Metric', 'Value'),
+          max_temp_imperial: max_temp_data.dig('Temperature', 'Imperial', 'Value'),
+          time: max_temp_data['LocalObservationDateTime']
         }
       end
 
       def render_historical_min_temperature(data)
+        min_temp_data = data.min_by { |d| d.dig('Temperature', 'Metric', 'Value') }
         {
-          min_temp_metric: data.dig('TemperatureSummary', 'Past24HourRange', 'Minimum', 'Metric', 'Value'),
-          min_temp_imperial: data.dig('TemperatureSummary', 'Past24HourRange', 'Minimum', 'Imperial', 'Value')
+          min_temp_metric: min_temp_data.dig('Temperature', 'Metric', 'Value'),
+          min_temp_imperial: min_temp_data.dig('Temperature', 'Imperial', 'Value'),
+          time: min_temp_data['LocalObservationDateTime']
         }
       end
 
@@ -113,7 +117,7 @@ module Request
       get 'historical/max' do
         response_data = fetch_historical_weather
         if response_data && response_data.any?
-          render_historical_max_temperature(response_data.last)
+          render_historical_max_temperature(response_data)
         else
           error!('Ошибка: Не удалось получить данные о максимальной температуре', 400)
         end
@@ -125,7 +129,7 @@ module Request
       get 'historical/min' do
         response_data = fetch_historical_weather
         if response_data && response_data.any?
-          render_historical_min_temperature(response_data.last)
+          render_historical_min_temperature(response_data)
         else
           error!('Ошибка: Не удалось получить данные о минимальной температуре', 400)
         end
