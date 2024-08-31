@@ -1,5 +1,3 @@
-# app/api/request/api.rb
-
 module Request
   class API < Grape::API
     version 'v1'
@@ -8,16 +6,19 @@ module Request
 
     helpers WeatherHelpers
 
+    before do
+      @weather_service = WeatherService.new
+    end
+
     resource :weather do
       desc 'Текущая температура'
       get :current do
-        service = WeatherService.new
-        response_data = service.current_weather
+        result = Weather::Operation::FetchCurrent.call
 
-        if response_data && response_data.any?
-          render_current_weather(response_data.first)
+        if result.success?
+          render_current_weather(result[:weather_data].first)
         else
-          error!('Ошибка: Не удалось получить данные о текущей температуре', 400)
+          error!(result[:error], 400)
         end
       rescue => e
         handle_error(e)
@@ -25,17 +26,20 @@ module Request
 
       desc 'Почасовая температура за последние 24 часа'
       get :historical do
-        service = WeatherService.new
-        data = service.historical_weather
+        result = Weather::Operation::FetchHistorical.call
 
-        data.map do |d|
-          {
-            observation_time: d['LocalObservationDateTime'],
-            metric_temp: d.dig('Temperature', 'Metric', 'Value'),
-            metric_unit: d.dig('Temperature', 'Metric', 'Unit'),
-            imperial_temp: d.dig('Temperature', 'Imperial', 'Value'),
-            imperial_unit: d.dig('Temperature', 'Imperial', 'Unit')
-          }
+        if result.success?
+          result[:weather_data].map do |d|
+            {
+              observation_time: d['LocalObservationDateTime'],
+              metric_temp: d.dig('Temperature', 'Metric', 'Value'),
+              metric_unit: d.dig('Temperature', 'Metric', 'Unit'),
+              imperial_temp: d.dig('Temperature', 'Imperial', 'Value'),
+              imperial_unit: d.dig('Temperature', 'Imperial', 'Unit')
+            }
+          end
+        else
+          error!(result[:error], 400)
         end
       rescue => e
         handle_error(e)
@@ -43,12 +47,12 @@ module Request
 
       desc 'Максимальная температура за 24 часа'
       get 'historical/max' do
-        service = WeatherService.new
-        response_data = service.historical_weather
-        if response_data && response_data.any?
-          render_historical_max_temperature(response_data)
+        result = Weather::Operation::FetchMaxTemperature.call
+
+        if result.success?
+          result[:max_temperature]
         else
-          error!('Ошибка: Не удалось получить данные о максимальной температуре', 400)
+          error!(result[:error] || 'Ошибка: Не удалось получить данные о максимальной температуре', 400)
         end
       rescue => e
         handle_error(e)
@@ -56,12 +60,12 @@ module Request
 
       desc 'Минимальная температура за 24 часа'
       get 'historical/min' do
-        service = WeatherService.new
-        response_data = service.historical_weather
-        if response_data && response_data.any?
-          render_historical_min_temperature(response_data)
+        result = Weather::Operation::FetchMinTemperature.call
+
+        if result.success?
+          result[:min_temperature]
         else
-          error!('Ошибка: Не удалось получить данные о минимальной температуре', 400)
+          error!(result[:error], 400)
         end
       rescue => e
         handle_error(e)
@@ -69,12 +73,12 @@ module Request
 
       desc 'Средняя температура за 24 часа'
       get 'historical/avg' do
-        service = WeatherService.new
-        response_data = service.historical_weather
-        if response_data && response_data.any?
-          render_historical_avg_temperature(response_data)
+        result = Weather::Operation::FetchAvgTemperature.call
+
+        if result.success?
+          { avg_temp_metric: result[:avg_temperature] }
         else
-          error!('Ошибка: Не удалось получить данные о средней температуре', 400)
+          error!(result[:error], 400)
         end
       rescue => e
         handle_error(e)
@@ -84,14 +88,14 @@ module Request
       params do
         requires :timestamp, type: Integer, desc: 'Временная метка (timestamp)'
       end
-      get :by_time do
-        timestamp = params[:timestamp]
-        service = WeatherService.new
-        response_data = service.historical_weather
-        if response_data && response_data.any?
-          render_weather_by_time(response_data, timestamp)
+      get 'by_time' do
+        # Исправление: передаем params в виде ключевого параметра
+        result = Weather::Operation::FetchWeatherByTime.call(params: params)
+
+        if result.success?
+          result[:closest_temperature]
         else
-          error!('Ошибка: Не удалось получить данные для заданного времени', 400)
+          error!(result[:error], 400)
         end
       rescue => e
         handle_error(e)
@@ -101,7 +105,13 @@ module Request
     resource :health do
       desc 'Статус бекенда'
       get do
-        { status: 'OK' }
+        result = Health::CheckOperation.call
+
+        if result.success?
+          { status: 'OK' }
+        else
+          error!('Internal server error', 500)
+        end
       end
     end
   end

@@ -1,8 +1,8 @@
 module WeatherHelpers
   BASE_URL = 'http://dataservice.accuweather.com/currentconditions/v1'.freeze
   HISTORICAL_URL = 'http://dataservice.accuweather.com/currentconditions/v1'.freeze
-  API_KEY = 'gBuYcaJIhWw4TSi1VsK5Ak63HQapKaNs'.freeze
-  LOCATION_KEY = '28143'.freeze
+  API_KEY = ENV['ACCUWEATHER_API_KEY'].freeze
+  LOCATION_KEY = ENV['LOCATION_KEY'].freeze
 
   def fetch_weather_data(url_suffix = '')
     uri = URI("#{BASE_URL}/#{LOCATION_KEY}#{url_suffix}?apikey=#{API_KEY}")
@@ -50,7 +50,7 @@ module WeatherHelpers
       avg_temp_metric = (temperatures.sum / temperatures.size).round(1)
       { avg_temp_metric: avg_temp_metric }
     else
-      error!('Ошибка: Нет данных для расчета средней температуры', 400)
+      raise 'Ошибка: Нет данных для расчета средней температуры'
     end
   end
 
@@ -65,11 +65,12 @@ module WeatherHelpers
         temperature_fahrenheit: closest_data.dig('Temperature', 'Imperial', 'Value')
       }
     else
-      error!('Ошибка: Нет данных для заданного времени', 404)
+      raise 'Ошибка: Нет данных для заданного времени'
     end
   end
 
   def handle_error(e)
+    Rails.logger.error("Ошибка: #{e.message}")
     error!({ error: "Ошибка: #{e.message}" }, 500)
   end
 end
