@@ -13,10 +13,10 @@ module Request
     resource :weather do
       desc 'Текущая температура'
       get :current do
-        result = Weather::Operation::FetchCurrent.call
+        result = Weather::Operation::FetchCurrent.call(helpers: self)
 
-        if result.success?
-          render_current_weather(result[:weather_data].first)
+        if result[:success]
+          render_current_weather(result[:weather_data])
         else
           error!(result[:error], 400)
         end
@@ -26,16 +26,14 @@ module Request
 
       desc 'Почасовая температура за последние 24 часа'
       get :historical do
-        result = Weather::Operation::FetchHistorical.call
+        result = Weather::Operation::FetchHistorical.call(helpers: self)
 
-        if result.success?
+        if result[:success]
           result[:weather_data].map do |d|
             {
-              observation_time: d['LocalObservationDateTime'],
-              metric_temp: d.dig('Temperature', 'Metric', 'Value'),
-              metric_unit: d.dig('Temperature', 'Metric', 'Unit'),
-              imperial_temp: d.dig('Temperature', 'Imperial', 'Value'),
-              imperial_unit: d.dig('Temperature', 'Imperial', 'Unit')
+              observation_time: d.observation_time,
+              metric_temp: d.temperature_celsius,
+              imperial_temp: d.temperature_fahrenheit
             }
           end
         else
@@ -47,9 +45,9 @@ module Request
 
       desc 'Максимальная температура за 24 часа'
       get 'historical/max' do
-        result = Weather::Operation::FetchMaxTemperature.call
+        result = Weather::Operation::FetchMaxTemperature.call(helpers: self)
 
-        if result.success?
+        if result[:success]
           result[:max_temperature]
         else
           error!(result[:error] || 'Ошибка: Не удалось получить данные о максимальной температуре', 400)
@@ -60,9 +58,9 @@ module Request
 
       desc 'Минимальная температура за 24 часа'
       get 'historical/min' do
-        result = Weather::Operation::FetchMinTemperature.call
+        result = Weather::Operation::FetchMinTemperature.call(helpers: self)
 
-        if result.success?
+        if result[:success]
           result[:min_temperature]
         else
           error!(result[:error], 400)
@@ -73,10 +71,10 @@ module Request
 
       desc 'Средняя температура за 24 часа'
       get 'historical/avg' do
-        result = Weather::Operation::FetchAvgTemperature.call
+        result = Weather::Operation::FetchAvgTemperature.call(helpers: self)
 
-        if result.success?
-          { avg_temp_metric: result[:avg_temperature] }
+        if result[:success]
+          result[:avg_temperature]
         else
           error!(result[:error], 400)
         end
@@ -89,9 +87,9 @@ module Request
         requires :timestamp, type: Integer, desc: 'Временная метка (timestamp)'
       end
       get 'by_time' do
-        result = Weather::Operation::FetchWeatherByTime.call(params: params)
+        result = Weather::Operation::FetchWeatherByTime.call(params: params, helpers: self)
 
-        if result.success?
+        if result[:success]
           result[:closest_temperature]
         else
           error!(result[:error], 400)

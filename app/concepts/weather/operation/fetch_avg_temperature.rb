@@ -1,20 +1,19 @@
-module Weather::Operation
-  class FetchAvgTemperature < Trailblazer::Operation
-    step :fetch_historical_weather
-    step :calculate_avg_temperature
+module Weather
+  module Operation
+    class FetchAvgTemperature < Trailblazer::Operation
+      step :fetch_data
 
-    def fetch_historical_weather(ctx, **)
-      service = WeatherService.new
-      ctx[:weather_data] = service.historical_weather
-    rescue StandardError => e
-      ctx[:error] = e.message
-      false
-    end
+      def fetch_data(ctx, **)
+        avg_temperature = ctx[:helpers].fetch_avg_temperature_from_db_or_api
 
-    def calculate_avg_temperature(ctx, **)
-      data = ctx[:weather_data]
-      temperatures = data.map { |d| d.dig('Temperature', 'Metric', 'Value').to_f }
-      ctx[:avg_temperature] = (temperatures.sum / temperatures.size).round(1) if temperatures.any?
+        if avg_temperature
+          ctx[:avg_temperature] = { avg_temp_metric: avg_temperature }
+          ctx[:success] = true
+        else
+          ctx[:error] = 'Ошибка: Не удалось получить данные'
+          ctx[:success] = false
+        end
+      end
     end
   end
 end

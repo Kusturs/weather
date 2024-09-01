@@ -12,10 +12,6 @@ class WeatherService
     fetch_historical_weather
   end
 
-  def fetch_current_weather_async
-    Delayed::Job.enqueue FetchWeatherJob.new(:current)
-  end
-
   def fetch_historical_weather_async
     Delayed::Job.enqueue FetchWeatherJob.new(:historical)
   end

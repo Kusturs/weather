@@ -1,21 +1,19 @@
-# app/concepts/weather/operation/fetch_min_temperature.rb
-module Weather::Operation
-  class FetchMinTemperature < Trailblazer::Operation
-    include WeatherHelpers
+module Weather
+  module Operation
+    class FetchMinTemperature < Trailblazer::Operation
+      step :fetch_data
 
-    step :fetch_data
-    step :calculate_min_temperature
+      def fetch_data(ctx, **)
+        min_record = ctx[:helpers].fetch_min_temperature_from_db_or_api
 
-    def fetch_data(ctx, **)
-      ctx[:data] = fetch_historical_weather
-      ctx[:data].present?
-    end
-
-    def calculate_min_temperature(ctx, **)
-      ctx[:min_temperature] = render_historical_min_temperature(ctx[:data])
-    rescue StandardError => e
-      ctx[:error] = e.message
-      false
+        if min_record
+          ctx[:min_temperature] = ctx[:helpers].render_historical_min_temperature([min_record])
+          ctx[:success] = true
+        else
+          ctx[:error] = 'Ошибка: Не удалось получить данные'
+          ctx[:success] = false
+        end
+      end
     end
   end
 end

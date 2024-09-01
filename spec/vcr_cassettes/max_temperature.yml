@@ -1,0 +1,111 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://dataservice.accuweather.com/currentconditions/v1/28143/historical/24?apikey=Nv2Eir6G9jJj4SngRQOxGeSKXEq2xBzi
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - dataservice.accuweather.com
+  response:
+    status:
+      code: 503
+      message: Unauthorized
+    headers:
+      Date:
+      - Sun, 01 Sep 2024 19:23:16 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '187'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"Code":"ServiceUnavailable","Message":"The allowed number of requests
+        has been exceeded.","Reference":"/currentconditions/v1/28143/historical/24?apikey=Nv2Eir6G9jJj4SngRQOxGeSKXEq2xBzi"}'
+  recorded_at: Sun, 01 Sep 2024 19:23:16 GMT
+- request:
+    method: get
+    uri: http://dataservice.accuweather.com/currentconditions/v1/28143/historical/24?apikey=xNKSu18yb9LOSc3KfHZrbBSCfBStQAWK
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - dataservice.accuweather.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 01 Sep 2024 19:36:22 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '11604'
+      Connection:
+      - keep-alive
+      Request-Context:
+      - appId=cid-v1:0158d69b-75d9-4a19-9e5f-a14693f847e4
+      Ratelimit-Limit:
+      - '50'
+      Ratelimit-Remaining:
+      - '24'
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, PUT, POST, DELETE
+      Access-Control-Allow-Headers:
+      - origin, x-requested-with, accept
+      Access-Control-Max-Age:
+      - '3628800'
+      Vary:
+      - Accept-Encoding
+      Cache-Control:
+      - public, max-age=472
+      Expires:
+      - Sun, 01 Sep 2024 19:44:14 GMT
+      Akamai-Grn:
+      - 0.107c3a17.1725219382.4b88ec5
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - deflate;q=0.6
+      - gzip;q=1.0
+      - identity;q=0.3
+      Host:
+      - api.accuweather.com
+      User-Agent:
+      - Ruby
+      X-Forwarded-For:
+      - 178.127.121.67
+      X-Forwarded-Port:
+      - '80'
+      X-Forwarded-Proto:
+      - http
+    body:
+      encoding: UTF-8
+      string: '[{"LocalObservationDateTime":"2024-09-02T00:57:00+06:00","EpochTime":1725217020,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.2,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T23:57:00+06:00","EpochTime":1725213420,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.5,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T23:02:00+06:00","EpochTime":1725210120,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.5,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T21:57:00+06:00","EpochTime":1725206220,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.2,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T20:57:00+06:00","EpochTime":1725202620,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":29.7,"Unit":"C","UnitType":17},"Imperial":{"Value":86.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T19:57:00+06:00","EpochTime":1725199020,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":30.4,"Unit":"C","UnitType":17},"Imperial":{"Value":87.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T19:02:00+06:00","EpochTime":1725195720,"WeatherText":"Mostly
+        cloudy","WeatherIcon":38,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":30.4,"Unit":"C","UnitType":17},"Imperial":{"Value":87.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T17:58:00+06:00","EpochTime":1725191880,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":31.3,"Unit":"C","UnitType":17},"Imperial":{"Value":88.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T17:02:00+06:00","EpochTime":1725188520,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":31.3,"Unit":"C","UnitType":17},"Imperial":{"Value":88.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T16:02:00+06:00","EpochTime":1725184920,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":31.8,"Unit":"C","UnitType":17},"Imperial":{"Value":89.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T15:02:00+06:00","EpochTime":1725181320,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":33.8,"Unit":"C","UnitType":17},"Imperial":{"Value":93.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T13:58:00+06:00","EpochTime":1725177480,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":33.0,"Unit":"C","UnitType":17},"Imperial":{"Value":91.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T12:58:00+06:00","EpochTime":1725173880,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":32.6,"Unit":"C","UnitType":17},"Imperial":{"Value":91.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T12:02:00+06:00","EpochTime":1725170520,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":32.5,"Unit":"C","UnitType":17},"Imperial":{"Value":90.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T10:57:00+06:00","EpochTime":1725166620,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":29.6,"Unit":"C","UnitType":17},"Imperial":{"Value":85.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T09:57:00+06:00","EpochTime":1725163020,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":28.4,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T08:57:00+06:00","EpochTime":1725159420,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":28.0,"Unit":"C","UnitType":17},"Imperial":{"Value":82.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T07:57:00+06:00","EpochTime":1725155820,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":27.5,"Unit":"C","UnitType":17},"Imperial":{"Value":82.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T06:57:00+06:00","EpochTime":1725152220,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":28.6,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T05:57:00+06:00","EpochTime":1725148620,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":true,"Temperature":{"Metric":{"Value":27.0,"Unit":"C","UnitType":17},"Imperial":{"Value":81.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T04:57:00+06:00","EpochTime":1725145020,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":27.5,"Unit":"C","UnitType":17},"Imperial":{"Value":81.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T03:57:00+06:00","EpochTime":1725141420,"WeatherText":"Cloudy","WeatherIcon":7,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":27.7,"Unit":"C","UnitType":17},"Imperial":{"Value":82.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T02:57:00+06:00","EpochTime":1725137820,"WeatherText":"Mostly
+        cloudy","WeatherIcon":38,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.0,"Unit":"C","UnitType":17},"Imperial":{"Value":82.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"},{"LocalObservationDateTime":"2024-09-01T01:58:00+06:00","EpochTime":1725134280,"WeatherText":"Mostly
+        cloudy","WeatherIcon":38,"HasPrecipitation":false,"PrecipitationType":null,"IsDayTime":false,"Temperature":{"Metric":{"Value":28.5,"Unit":"C","UnitType":17},"Imperial":{"Value":83.0,"Unit":"F","UnitType":18}},"MobileLink":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us","Link":"http://www.accuweather.com/en/bd/dhaka/28143/current-weather/28143?lang=en-us"}]'
+  recorded_at: Sun, 01 Sep 2024 19:36:22 GMT
+recorded_with: VCR 6.3.1

@@ -1,11 +1,11 @@
 class FetchWeatherJob < Struct.new(:type)
   def perform
     service = WeatherService.new
-    case type
-    when :current
-      service.current_weather
-    when :historical
+
+    if type == :historical
       service.historical_weather
+    else
+      Rails.logger.error("Unknown job type: #{type}")
     end
   end
 

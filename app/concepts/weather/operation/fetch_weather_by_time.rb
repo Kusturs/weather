@@ -1,22 +1,19 @@
-module Weather::Operation
-  class FetchWeatherByTime < Trailblazer::Operation
-    include WeatherHelpers
+module Weather
+  module Operation
+    class FetchWeatherByTime < Trailblazer::Operation
+      step :fetch_data
 
-    step :fetch_data
-    step :find_closest_temperature
+      def fetch_data(ctx, params:, **)
+        closest_record = ctx[:helpers].fetch_weather_by_time_from_db_or_api(params[:timestamp])
 
-    def fetch_data(ctx, params:, **)
-      ctx[:data] = fetch_historical_weather
-      ctx[:data].present?
-    end
-
-    def find_closest_temperature(ctx, params:, **)
-      timestamp = params[:timestamp]
-
-      ctx[:closest_temperature] = render_weather_by_time(ctx[:data], timestamp)
-    rescue StandardError => e
-      ctx[:error] = e.message
-      false
+        if closest_record
+          ctx[:closest_temperature] = ctx[:helpers].render_weather_by_time(closest_record)
+          ctx[:success] = true
+        else
+          ctx[:error] = 'Ошибка: Не удалось получить данные'
+          ctx[:success] = false
+        end
+      end
     end
   end
 end
