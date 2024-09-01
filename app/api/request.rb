@@ -89,7 +89,6 @@ module Request
         requires :timestamp, type: Integer, desc: 'Временная метка (timestamp)'
       end
       get 'by_time' do
-        # Исправление: передаем params в виде ключевого параметра
         result = Weather::Operation::FetchWeatherByTime.call(params: params)
 
         if result.success?
