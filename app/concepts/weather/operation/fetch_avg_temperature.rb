@@ -4,7 +4,8 @@ module Weather
       step :fetch_data
 
       def fetch_data(ctx, **)
-        avg_temperature = ctx[:helpers].fetch_avg_temperature_from_db_or_api
+        weather_service = WeatherService.new
+        avg_temperature = weather_service.fetch_avg_temperature_from_db_or_api
 
         if avg_temperature
           ctx[:avg_temperature] = { avg_temp_metric: avg_temperature }

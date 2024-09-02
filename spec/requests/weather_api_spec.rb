@@ -10,7 +10,7 @@ RSpec.describe 'Weather API', type: :request do
         let(:weather_record) { create(:weather_record) }
 
         before do
-          allow_any_instance_of(WeatherHelpers).to receive(:fetch_weather_data_from_db_or_api).and_return(weather_record)
+          allow_any_instance_of(WeatherService).to receive(:fetch_weather_data_from_db_or_api).and_return(weather_record)
         end
 
         run_test!
@@ -29,7 +29,7 @@ RSpec.describe 'Weather API', type: :request do
         end
 
         before do
-          allow_any_instance_of(WeatherHelpers).to receive(:fetch_historical_weather_from_db_or_api).and_return(historical_weather_record)
+          allow_any_instance_of(WeatherService).to receive(:fetch_historical_weather_from_db_or_api).and_return(historical_weather_record)
         end
 
         run_test!
@@ -47,7 +47,7 @@ RSpec.describe 'Weather API', type: :request do
         let(:max_temperature_celsius) { create(:historical_weather_record) }
 
         before do
-          allow_any_instance_of(WeatherHelpers).to receive(:fetch_max_temperature_from_db_or_api).and_return(max_temperature_celsius)
+          allow_any_instance_of(WeatherService).to receive(:fetch_max_temperature_from_db_or_api).and_return(max_temperature_celsius)
         end
 
         run_test!
@@ -99,7 +99,7 @@ RSpec.describe 'Weather API', type: :request do
         let(:temperature_celsius) { create(:weather_record) }
 
         before do
-          allow_any_instance_of(WeatherHelpers).to receive(:fetch_weather_by_time_from_db_or_api).and_return(temperature_celsius)
+          allow_any_instance_of(WeatherService).to receive(:fetch_weather_by_time_from_db_or_api).and_return(temperature_celsius)
         end
 
         run_test! do |response|

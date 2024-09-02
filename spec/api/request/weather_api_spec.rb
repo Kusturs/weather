@@ -50,14 +50,4 @@ RSpec.describe 'Weather API', type: :request do
       expect(json).to have_key('avg_temp_metric')
     end
   end
-
-  describe 'GET /api/v1/weather/by_time' do
-    it 'returns the temperature closest to the given timestamp', vcr: { cassette_name: 'weather_by_time' } do
-      get '/api/v1/weather/by_time', params: { timestamp: 1621823799 }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json).to have_key('temperature_celsius')
-      expect(json).to have_key('temperature_fahrenheit')
-    end
-  end
 end

@@ -4,7 +4,8 @@ module Weather
       step :fetch_data
 
       def fetch_data(ctx, **)
-        max_record = ctx[:helpers].fetch_max_temperature_from_db_or_api
+        weather_service = WeatherService.new
+        max_record = weather_service.fetch_max_temperature_from_db_or_api
 
         if max_record
           ctx[:max_temperature] = ctx[:helpers].render_historical_max_temperature([max_record])

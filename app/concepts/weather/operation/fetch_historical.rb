@@ -4,7 +4,8 @@ module Weather
       step :fetch_data
 
       def fetch_data(ctx, **)
-        weather_records = ctx[:helpers].fetch_historical_weather_from_db_or_api
+        weather_service = WeatherService.new
+        weather_records = weather_service.fetch_historical_weather_from_db_or_api
 
         if weather_records.any?
           ctx[:weather_data] = weather_records
