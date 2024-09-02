@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_09_01_115511) do
+ActiveRecord::Schema.define(version: 2024_09_02_081213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,15 @@ ActiveRecord::Schema.define(version: 2024_09_01_115511) do
     t.datetime "created_at", precision: 6
     t.datetime "updated_at", precision: 6
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "historical_weather_records", force: :cascade do |t|
+    t.datetime "observation_time", null: false
+    t.float "temperature_celsius", null: false
+    t.float "temperature_fahrenheit", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["observation_time"], name: "index_historical_weather_records_on_observation_time", unique: true
   end
 
   create_table "weather_records", force: :cascade do |t|

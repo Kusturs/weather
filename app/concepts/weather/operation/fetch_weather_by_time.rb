@@ -10,7 +10,7 @@ module Weather
           ctx[:closest_temperature] = ctx[:helpers].render_weather_by_time(closest_record)
           ctx[:success] = true
         else
-          ctx[:error] = 'Ошибка: Не удалось получить данные'
+          ctx[:error] = 'Ошибка: Не удалось получить данные за эту дату'
           ctx[:success] = false
         end
       end

@@ -31,43 +31,43 @@ module WeatherHelpers
   end
 
   def fetch_historical_weather_from_db_or_api
-    latest_records = WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(observation_time: :asc)
+    latest_records = HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(observation_time: :asc)
 
     if latest_records.exists?
       latest_records
     else
       data = fetch_historical_weather
       save_historical_weather_data(data)
-      WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(observation_time: :asc)
+      HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(observation_time: :asc)
     end
   end
 
   def fetch_max_temperature_from_db_or_api
-    max_record = WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :desc).first
+    max_record = HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :desc).first
 
     if max_record
       max_record
     else
       data = fetch_historical_weather
       save_historical_weather_data(data)
-      WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :desc).first
+      HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :desc).first
     end
   end
 
   def fetch_min_temperature_from_db_or_api
-    min_record = WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :asc).first
+    min_record = HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :asc).first
 
     if min_record
       min_record
     else
       data = fetch_historical_weather
       save_historical_weather_data(data)
-      WeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :asc).first
+      HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).order(temperature_celsius: :asc).first
     end
   end
 
   def fetch_avg_temperature_from_db_or_api
-    records = WeatherRecord.where('observation_time >= ?', 24.hours.ago)
+    records = HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago)
 
     if records.exists?
       temperatures = records.map(&:temperature_celsius)
@@ -76,7 +76,7 @@ module WeatherHelpers
     else
       data = fetch_historical_weather
       save_historical_weather_data(data)
-      temperatures = WeatherRecord.where('observation_time >= ?', 24.hours.ago).map(&:temperature_celsius)
+      temperatures = HistoricalWeatherRecord.where('observation_time >= ?', 24.hours.ago).map(&:temperature_celsius)
       temperatures.sum / temperatures.size if temperatures.any?
     end
   end
@@ -86,6 +86,7 @@ module WeatherHelpers
                        .select("*, ABS(EXTRACT(EPOCH FROM observation_time) - #{timestamp}) AS time_diff")
                        .order("time_diff")
                        .first
+
     if closest_record
       closest_record
     else
@@ -97,7 +98,6 @@ module WeatherHelpers
         .first
     end
   end
-
 
   def render_current_weather(record)
     {
@@ -161,10 +161,10 @@ module WeatherHelpers
 
   def save_historical_weather_data(data)
     data.each do |d|
-      WeatherRecord.create!(
-        observation_time: d['LocalObservationDateTime'],
-        temperature_celsius: d.dig('Temperature', 'Metric', 'Value'),
-        temperature_fahrenheit: d.dig('Temperature', 'Imperial', 'Value')
+      HistoricalWeatherRecord.create!(
+        observation_time: Time.parse(d["LocalObservationDateTime"]),
+        temperature_celsius: d["Temperature"]["Metric"]["Value"],
+        temperature_fahrenheit: d["Temperature"]["Imperial"]["Value"],
       )
     end
   end

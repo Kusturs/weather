@@ -23,6 +23,8 @@ gem 'puma', '~> 5.0'
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'grape', '~> 2.1.3'
+gem 'rswag-api'
+gem 'rswag-ui'
 
 gem 'httparty'
 
@@ -49,8 +51,8 @@ group :development, :test do
   gem 'rack-test'
   gem 'rswag-specs'
   gem 'spring'
-  gem 'rswag-api'
-  gem 'rswag-ui'
+  gem 'factory_bot_rails'
+  gem 'faker'
 end
 
 group :development do

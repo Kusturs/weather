@@ -3,9 +3,85 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
-paths: {}
+paths:
+  "/api/v1/weather/current":
+    get:
+      summary: Get the current temperature
+      tags:
+      - Weather
+      responses:
+        '200':
+          description: successful
+  "/api/v1/weather/historical":
+    get:
+      summary: Get hourly temperatures for the last 24 hours
+      tags:
+      - Weather
+      responses:
+        '200':
+          description: successful
+  "/api/v1/weather/historical/max":
+    get:
+      summary: Get maximum temperature for the last 24 hours
+      tags:
+      - Weather
+      responses:
+        '200':
+          description: successful
+  "/api/v1/weather/historical/min":
+    get:
+      summary: Get minimum temperature for the last 24 hours
+      tags:
+      - Weather
+      responses:
+        '200':
+          description: successful
+  "/api/v1/weather/historical/avg":
+    get:
+      summary: Get average temperature for the last 24 hours
+      tags:
+      - Weather
+      responses:
+        '200':
+          description: successful
+  "/api/v1/weather/by_time":
+    get:
+      summary: Returns the temperature closest to the given timestamp
+      tags:
+      - Weather
+      parameters:
+      - name: timestamp
+        in: query
+        description: Timestamp in UNIX format
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: temperature at specific time found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temperature_celsius:
+                    type: number
+                    format: float
+                  temperature_fahrenheit:
+                    type: number
+                    format: float
+                required:
+                - temperature_celsius
+                - temperature_fahrenheit
+  "/api/v1/health":
+    get:
+      summary: Health check
+      tags:
+      - Health
+      responses:
+        '200':
+          description: successful
 servers:
-- url: https://{defaultHost}
+- url: http://{defaultHost}
   variables:
     defaultHost:
-      default: www.example.com
+      default: 127.0.0.1:3000
