@@ -45,5 +45,5 @@ RSpec.describe Weather::Operation::FetchMinTemperature, type: :operation do
         expect(operation.success?).to be(false)
         expect(operation[:error]).to eq('Calculation error')
     end
-
+  end
 end

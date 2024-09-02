@@ -69,7 +69,7 @@ RSpec.describe Weather::Operation::FetchWeatherByTime, type: :operation do
     end
 
     it 'handles incorrect timestamp format gracefully' do
-      expect(operation.success?).to be(true)
+      expect(operation.success?).to be(false)
       expect(operation[:closest_temperature]).to be_nil
     end
   end
