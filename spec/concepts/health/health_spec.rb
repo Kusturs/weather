@@ -1,18 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Health::CheckOperation, type: :operation do
-  subject(:operation) { described_class.call }
+RSpec.describe Health::CheckOperation do
+  let(:result) { described_class.call }
 
-  it "includes :result.success key in options" do
-    expect(operation).to include(:'result.success')
+  it 'is successful' do
+    expect(result.success?).to be(true)
   end
 
-  it "sets 'result.success' to true" do
-    expect(operation[:'result.success']).to be(true)
-  end
-
-  it 'executes successfully' do
-    expect(operation.success?).to be(true)
+  it 'sets result.success to true' do
+    expect(result['result.success']).to be(true)
   end
 end
 

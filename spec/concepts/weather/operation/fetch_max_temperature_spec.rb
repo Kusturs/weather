@@ -1,50 +1,46 @@
 require 'rails_helper'
 
-RSpec.describe Weather::Operation::FetchMaxTemperature, type: :operation do
-  subject(:operation) { described_class.call }
+RSpec.describe Weather::Operation::FetchMaxTemperature do
+  let(:weather_service) { instance_double("WeatherService") }
+  let(:helpers) { instance_double("Helpers") }
+  let(:max_record) { { temp: 35.0, date: '2023-09-01' } }
+  let(:rendered_max_temperature) { "Max temperature: 35.0°C on 2023-09-01" }
 
-  context 'when weather data is available' do 
-    let(:data) do
-        [
-          { 'Temperature' => { 'Metric' => { 'Value' => 15.0 } } },
-          { 'Temperature' => { 'Metric' => { 'Value' => 25.0 } } }
-        ]
-      end
-    
-      before do
-        allow_any_instance_of(Weather::Operation::FetchMaxTemperature).to receive(:fetch_historical_weather).and_return(data)
-        allow_any_instance_of(Weather::Operation::FetchMaxTemperature).to receive(:render_historical_max_temperature).and_return(25.0)
-      end
-    
-      it 'executes successfully and calculates max temperature' do
-        expect(operation.success?).to be(true)
-        expect(operation[:max_temperature]).to eq(25.0)
-      end
+  before do
+    allow(WeatherService).to receive(:new).and_return(weather_service)
   end
 
-  context 'when weather data is empty' do 
+  context 'when max temperature is successfully fetched' do
     before do
-        allow_any_instance_of(Weather::Operation::FetchMaxTemperature).to receive(:fetch_historical_weather).and_return(nil)
-      end
-    
-      it 'handles empty data correctly' do
-        expect(operation.success?).to be(false)
-        expect(operation[:data]).to be_nil
-      end
-  end
-
-  context 'when an error occurs during calculating max temperature' do
-    let(:data) { [{ 'Temperature' => { 'Metric' => { 'Value' => 15.0 } } }] }
-
-    before do
-        allow_any_instance_of(Weather::Operation::FetchMaxTemperature).to receive(:fetch_historical_weather).and_return(data)
-        allow_any_instance_of(Weather::Operation::FetchMaxTemperature).to receive(:render_historical_max_temperature).and_raise(StandardError, 'Calculation error')
+      allow(weather_service).to receive(:fetch_max_temperature_from_db_or_api).and_return(max_record)
+      allow(helpers).to receive(:render_historical_max_temperature).with([max_record]).and_return(rendered_max_temperature)
     end
 
-    it 'handles error during max temperature calculation' do
-        expect(operation.success?).to be(false)
-        expect(operation[:error]).to eq('Calculation error')
+    it 'is successful' do
+      result = described_class.call(helpers: helpers)
+      expect(result[:success]).to be(true)
+    end
+
+    it 'sets the max_temperature in the context' do
+      result = described_class.call(helpers: helpers)
+      expect(result[:max_temperature]).to eq(rendered_max_temperature)
     end
   end
 
+  context 'when fetching max temperature fails' do
+    before do
+      allow(weather_service).to receive(:fetch_max_temperature_from_db_or_api).and_return(nil)
+    end
+
+    it 'is not successful' do
+      result = described_class.call(helpers: helpers)
+      expect(result[:success]).to be(false)
+    end
+
+    it 'sets an error message in the context' do
+      result = described_class.call(helpers: helpers)
+      expect(result[:error]).to eq('Ошибка: Не удалось получить данные')
+    end
+  end
 end
+

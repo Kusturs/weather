@@ -1,47 +1,44 @@
 require 'rails_helper'
 
-RSpec.describe Weather::Operation::FetchAvgTemperature, type: :operation do
-  subject(:operation) { described_class.call }
+RSpec.describe Weather::Operation::FetchAvgTemperature do
+  let(:weather_service) { instance_double("WeatherService") }
 
-  context 'when weather data is available' do
-    let(:weather_data) do
-      [
-        { 'Temperature' => { 'Metric' => { 'Value' => 20.0 } } },
-        { 'Temperature' => { 'Metric' => { 'Value' => 22.0 } } },
-        { 'Temperature' => { 'Metric' => { 'Value' => 24.0 } } }
-      ]
-    end
+  before do
+    allow(WeatherService).to receive(:new).and_return(weather_service)
+  end
+
+  context 'when average temperature is successfully fetched' do
+    let(:avg_temperature) { 25.0 }
 
     before do
-      allow_any_instance_of(WeatherService).to receive(:historical_weather).and_return(weather_data)
+      allow(weather_service).to receive(:fetch_avg_temperature_from_db_or_api).and_return(avg_temperature)
     end
 
-    it 'executes successfully and calculates average temperature' do
-      expect(operation.success?).to be(true)
-      expect(operation[:avg_temperature]).to eq(22.0)
+    it 'is successful' do
+      result = described_class.call
+      expect(result[:success]).to be(true)
+    end
+
+    it 'sets the avg_temperature in the context' do
+      result = described_class.call
+      expect(result[:avg_temperature]).to eq({ avg_temp_metric: avg_temperature })
     end
   end
 
-  context 'when weather data is empty' do
-    let(:weather_data) { [] }
-
+  context 'when fetching average temperature fails' do
     before do
-      allow_any_instance_of(WeatherService).to receive(:historical_weather).and_return(weather_data)
+      allow(weather_service).to receive(:fetch_avg_temperature_from_db_or_api).and_return(nil)
     end
 
-    it 'handles empty temperature data correctly' do
-      expect(operation[:avg_temperature]).to be_nil
-    end
-  end
-
-  context 'when an error occurs during weather data fetch' do
-    before do
-      allow_any_instance_of(WeatherService).to receive(:historical_weather).and_raise(StandardError, 'Service unavailable')
+    it 'is not successful' do
+      result = described_class.call
+      expect(result[:success]).to be(false)
     end
 
-    it 'handles error during weather data fetch' do
-      expect(operation.success?).to be(false)
-      expect(operation[:error]).to eq('Service unavailable')
+    it 'sets an error message in the context' do
+      result = described_class.call
+      expect(result[:error]).to eq('Ошибка: Не удалось получить данные')
     end
   end
 end
+

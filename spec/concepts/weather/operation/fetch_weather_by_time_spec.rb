@@ -1,76 +1,63 @@
 require 'rails_helper'
 
-RSpec.describe Weather::Operation::FetchWeatherByTime, type: :operation do
-  subject(:operation) { described_class.call(params: params) }
+RSpec.describe Weather::Operation::FetchWeatherByTime do
+  let(:weather_service) { instance_double("WeatherService") }
+  let(:helpers) { spy("Helpers") }
+  let(:timestamp) { '2024-09-01 15:00:00' }
+  let(:params) { { timestamp: timestamp } }
+  let(:closest_record) { { temp: 22.5, timestamp: timestamp } }
+  let(:rendered_temperature) { "Temperature at #{timestamp}: 22.5°C" }
 
-  context 'when the timestamp is valid and data is available' do
-    let(:params) { { timestamp: '2024-01-01T12:00:00Z' } }
-    let(:data) do
-      [
-        { 'Timestamp' => '2024-01-01T12:00:00Z', 'Temperature' => { 'Metric' => { 'Value' => 15.0 } } },
-        { 'Timestamp' => '2024-01-01T13:00:00Z', 'Temperature' => { 'Metric' => { 'Value' => 18.0 } } }
-      ]
-    end
+  before do
+    allow(WeatherService).to receive(:new).and_return(weather_service)
+  end
 
+  context 'when weather data is successfully fetched' do
     before do
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:fetch_historical_weather).and_return(data)
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:render_weather_by_time).with(data, '2024-01-01T12:00:00Z').and_return(15.0)
+      allow(weather_service).to receive(:fetch_weather_by_time_from_db_or_api).with(timestamp).and_return(closest_record)
+      allow(helpers).to receive(:render_weather_by_time).with(closest_record).and_return(rendered_temperature)
     end
 
-    it 'executes successfully and finds the closest temperature' do
-      expect(operation.success?).to be(true)
-      expect(operation[:closest_temperature]).to eq(15.0)
+    it 'calls fetch_weather_by_time_from_db_or_api with the correct timestamp' do
+      described_class.call(params: params, helpers: helpers)
+      expect(weather_service).to have_received(:fetch_weather_by_time_from_db_or_api).with(timestamp)
+    end
+
+    it 'is successful' do
+      result = described_class.call(params: params, helpers: helpers)
+      expect(result[:success]).to be(true)
+    end
+
+    it 'sets the closest_temperature in the context' do
+      result = described_class.call(params: params, helpers: helpers)
+      expect(result[:closest_temperature]).to eq(rendered_temperature)
+    end
+
+    it 'calls render_weather_by_time with the correct record' do
+      described_class.call(params: params, helpers: helpers)
+      expect(helpers).to have_received(:render_weather_by_time).with(closest_record)
     end
   end
 
-  context 'when the timestamp is valid but no data is returned' do
-    let(:params) { { timestamp: '2024-09-01T12:00:00Z' } }
-
+  context 'when fetching weather data fails' do
     before do
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:fetch_historical_weather).and_return(nil)
+      allow(weather_service).to receive(:fetch_weather_by_time_from_db_or_api).with(timestamp).and_return(nil)
     end
 
-    it 'handles empty data correctly' do
-      expect(operation.success?).to be(false)
-      expect(operation[:data]).to be_nil
-    end
-  end
-
-  context 'when there is an error during calculation' do
-    let(:params) { { timestamp: '2024-09-01T12:00:00Z' } }
-    let(:data) do
-      [
-        { 'Timestamp' => '2024-09-01T11:00:00Z', 'Temperature' => { 'Metric' => { 'Value' => 15.0 } } }
-      ]
+    it 'is not successful' do
+      result = described_class.call(params: params, helpers: helpers)
+      expect(result[:success]).to be(false)
     end
 
-    before do
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:fetch_historical_weather).and_return(data)
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:render_weather_by_time).and_raise(StandardError, 'Calculation error')
+    it 'sets an error message in the context' do
+      result = described_class.call(params: params, helpers: helpers)
+      expect(result[:error]).to eq('Ошибка: Не удалось получить данные за эту дату')
     end
 
-    it 'handles error during finding closest temperature' do
-      expect(operation.success?).to be(false)
-      expect(operation[:error]).to eq('Calculation error')
-    end
-  end
-
-  context 'when the timestamp format is incorrect' do
-    let(:params) { { timestamp: 'invalid-timestamp-format' } }
-    let(:data) do
-      [
-        { 'Timestamp' => '2024-09-01T11:00:00Z', 'Temperature' => { 'Metric' => { 'Value' => 15.0 } } }
-      ]
-    end
-
-    before do
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:fetch_historical_weather).and_return(data)
-      allow_any_instance_of(Weather::Operation::FetchWeatherByTime).to receive(:render_weather_by_time).and_return(nil)
-    end
-
-    it 'handles incorrect timestamp format gracefully' do
-      expect(operation.success?).to be(false)
-      expect(operation[:closest_temperature]).to be_nil
+    it 'does not call render_weather_by_time' do
+      described_class.call(params: params, helpers: helpers)
+      expect(helpers).not_to have_received(:render_weather_by_time)
     end
   end
 end
+
